@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博木鱼</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Kaiti SC', 'PingFang SC', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+        /* 标题区域 */
+        .header {
+            width: 100%;
+            text-align: center;
+        }
+        .title {
+            font-size: 25vw;
+            font-weight: normal;
+            background: linear-gradient(180deg, rgba(255, 176, 103, 0.05), rgba(115, 55, 0, 0.02));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .score {
+            font-size: 10vh;
+            font-family: 'PingFang SC', sans-serif;
+            font-weight: 900;
+        }
+        .desc {
+            font-size: 5vh;
+            font-family: 'PingFang SC', sans-serif;
+            margin-top: 5px;
+        }
+        /* 木鱼点击区域 */
+        .muyu-container {
+            position: relative;
+            margin: 40px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .muyu {
+            width: 284px;
+            max-width: 70vw;
+            transition: transform 0.1s ease;
+        }
+        .muyu.active {
+            transform: scale(1.1);
+        }
+        .hammer {
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            width: 119px;
+            transform-origin: bottom right;
+            transition: transform 0.1s ease;
+        }
+        .hammer.active {
+            transform: rotate(-25deg);
+        }
+        /* 漂浮文字动画 */
+        .float-text {
+            position: absolute;
+            font-family: 'PingFang SC', sans-serif;
+            font-size: 1.5em;
+            color: #FFFFFF;
+            pointer-events: none;
+            animation: floatUp 0.4s ease forwards;
+        }
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+        /* 底部提示 */
+        .tip {
+            font-size: 1.2em;
+            font-family: 'Kaiti SC', serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">赛博木鱼</h1>
+        <div class="score" id="score">0</div>
+        <p class="desc">功德</p>
+    </div>
+
+    <div class="muyu-container" id="muyuContainer">
+        <img src="https://img.alicdn.com/imgextra/i3/O1CN012CO0YU1VSfNs506ZS_!!6000000002652-2-tps-284-236.png" alt="木鱼" class="muyu" id="muyu">
+        <img src="https://img.alicdn.com/imgextra/i1/O1CN01tKb5Et1aSjWRjCHK3_!!6000000003329-2-tps-119-69.png" alt="锤子" class="hammer" id="hammer">
+    </div>
+
+    <p class="tip">轻敲木鱼，细悟赛博真经。</p>
+
+    <script>
+        const scoreEl = document.getElementById('score');
+        const muyuEl = document.getElementById('muyu');
+        const hammerEl = document.getElementById('hammer');
+        const containerEl = document.getElementById('muyuContainer');
+        const audio = new Audio('https://qianwen.alicdn.com/resource/qiaomuyu.mp3');
+        let score = 0;
+
+        containerEl.addEventListener('click', () => {
+            // 播放敲击音效
+            audio.currentTime = 0;
+            audio.play().catch(err => console.log('音频播放失败:', err));
+            
+            // 触发木鱼和锤子动画
+            muyuEl.classList.add('active');
+            hammerEl.classList.add('active');
+            setTimeout(() => {
+                muyuEl.classList.remove('active');
+                hammerEl.classList.remove('active');
+            }, 100);
+
+            // 更新分数
+            score += 1;
+            scoreEl.textContent = score;
+
+            // 生成漂浮功德+1文字
+            const floatText = document.createElement('div');
+            floatText.className = 'float-text';
+            floatText.textContent = '功德+1';
+            floatText.style.left = (containerEl.offsetWidth / 2 - 30) + 'px';
+            containerEl.appendChild(floatText);
+
+            // 动画结束后移除元素
+            setTimeout(() => {
+                floatText.remove();
+            }, 400);
+        });
+    </script>
+</body>
+</html>
