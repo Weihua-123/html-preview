@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博木鱼</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Kaiti SC', 'PingFang SC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .header {
+            width: 100%;
+        }
+        .main-title {
+            font-size: 25vw;
+            font-family: 'Kaiti SC', serif;
+            background: linear-gradient(180deg, rgba(255, 176, 103, 0.05), rgba(115, 55, 0, 0.02));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+        .score {
+            font-size: 10vh;
+            font-family: 'PingFang SC', sans-serif;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+        .desc {
+            font-size: 5vh;
+            font-family: 'PingFang SC', sans-serif;
+        }
+        .woodfish-area {
+            position: relative;
+            margin: 2rem 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .woodfish {
+            width: 284px;
+            height: 236px;
+            transition: transform 0.1s ease;
+        }
+        .woodfish.active {
+            transform: scale(1.1);
+        }
+        .hammer {
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            width: 119px;
+            height: 69px;
+            transform-origin: bottom left;
+            transition: transform 0.1s ease;
+        }
+        .hammer.active {
+            transform: rotate(-25deg);
+        }
+        .floating-text {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'PingFang SC', sans-serif;
+            font-size: 1.5em;
+            color: #FFB067;
+            opacity: 0;
+            pointer-events: none;
+            animation: floatUp 0.4s ease forwards;
+        }
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-80px);
+            }
+        }
+        .footer {
+            font-size: 1.2em;
+            font-family: 'Kaiti SC', serif;
+            margin-top: 2rem;
+            opacity: 0.8;
+        }
+        @media (max-width: 768px) {
+            .woodfish {
+                width: 200px;
+                height: auto;
+            }
+            .hammer {
+                width: 80px;
+                height: auto;
+                top: -15px;
+                right: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="main-title">赛博木鱼</div>
+        <div class="score" id="score">0</div>
+        <div class="desc">功德</div>
+    </div>
+    <div class="woodfish-area" id="woodfishContainer">
+        <img src="https://img.alicdn.com/imgextra/i3/O1CN012CO0YU1VSfNs506ZS_!!6000000002652-2-tps-284-236.png" alt="木鱼" class="woodfish" id="woodfish">
+        <img src="https://img.alicdn.com/imgextra/i1/O1CN01tKb5Et1aSjWRjCHK3_!!6000000003329-2-tps-119-69.png" alt="锤子" class="hammer" id="hammer">
+    </div>
+    <div class="footer">
+        轻敲木鱼，细悟赛博真经。
+    </div>
+    <audio id="tapSound" src="https://qianwen.alicdn.com/resource/qiaomuyu.mp3" preload="auto"></audio>
+    <script>
+        const scoreElement = document.getElementById('score');
+        const woodfishElement = document.getElementById('woodfish');
+        const hammerElement = document.getElementById('hammer');
+        const container = document.getElementById('woodfishContainer');
+        const audio = document.getElementById('tapSound');
+        let score = 0;
+        // 处理点击/触摸事件
+        const handleTap = () => {
+            // 播放音效，重置播放位置防止连续点击无音效
+            audio.currentTime = 0;
+            audio.play().catch(err => console.log('音频播放失败:', err));
+            // 木鱼放大动画
+            woodfishElement.classList.add('active');
+            setTimeout(() => {
+                woodfishElement.classList.remove('active');
+            }, 100);
+            // 锤子敲击动画
+            hammerElement.classList.add('active');
+            setTimeout(() => {
+                hammerElement.classList.remove('active');
+            }, 100);
+            // 生成漂浮功德+1文字
+            const floatText = document.createElement('div');
+            floatText.className = 'floating-text';
+            floatText.textContent = '功德+1';
+            container.appendChild(floatText);
+            setTimeout(() => {
+                floatText.remove();
+            }, 400);
+            // 更新分数
+            score += 1;
+            scoreElement.textContent = score;
+        };
+        container.addEventListener('click', handleTap);
+        container.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleTap();
+        });
+    </script>
+</body>
+</html>
